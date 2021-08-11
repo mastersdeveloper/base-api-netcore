@@ -18,3 +18,5 @@ Scaffold-DbContext "Server=(localdb)\MSSQLLocalDB;Database=SocialMedia;Integrate
 
 Protocolos al momento de usar HTTP
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
