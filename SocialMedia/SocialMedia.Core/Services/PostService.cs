@@ -1,57 +1,92 @@
 ﻿using SocialMedia.Core.Entities;
+using SocialMedia.Core.Exceptions;
 using SocialMedia.Core.Interfaces;
+using SocialMedia.Core.QueryFilters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialMedia.Core.Services
 {
     public class PostService : IPostService
     {
-        private readonly IPostRepository postRepository;
-        private readonly IUserRepository userRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public PostService(IPostRepository _postRepository, IUserRepository _userRepository)
+        public PostService(IUnitOfWork _unitOfWork)
         {
-            this.postRepository = _postRepository;
-            this.userRepository = _userRepository;
+            this.unitOfWork = _unitOfWork;
         }
 
         public async Task<bool> DeletePost(int id)
         {
-            return await this.postRepository.DeletePost(id);
+            await this.unitOfWork.PostRepository.Delete(id);
+            await this.unitOfWork.SaveChangesAsync();
+            return true;
         }
 
         public async Task<Post> GetPost(int id)
         {
-            return await this.postRepository.GetPost(id);
+            return await this.unitOfWork.PostRepository.GetById(id);
         }
 
-        public async Task<IEnumerable<Post>> GetPosts()
+        public IEnumerable<Post> GetPosts(PostQueryFilter filters)
         {
-            return await this.postRepository.GetPosts();
+            var posts = this.unitOfWork.PostRepository.GetAll();
+
+            if (filters.UserId != null)
+            {
+                posts = posts.Where(x => x.UserId == filters.UserId);
+            }
+
+            if (filters.Date != null)
+            {
+                posts = posts.Where(x => x.Date.ToShortDateString() == filters.Date?.ToShortDateString());
+            }
+
+            if (filters.Descripcion != null)
+            {
+                posts = posts.Where(x => x.Description.ToLower().Contains(filters.Descripcion.ToLower()));
+            }
+
+            return posts;
         }
 
         public async Task InsertPost(Post post)
         {
-            var user = await this.userRepository.GetUser(post.UserId);
+            var user = await this.unitOfWork.UserRepository.GetById(post.UserId);
 
             if (user == null)
             {
-                throw new Exception("User doesn't exist");
+                throw new BusinessException("User doesn't exist");
+            }
+
+            var userPost = await this.unitOfWork.PostRepository.GetPostsByUser(post.UserId);
+
+            if (userPost.Count() < 10)
+            {
+                var lastPost = userPost.LastOrDefault();
+
+                if ((DateTime.Now - lastPost.Date).TotalDays < 7)
+                {
+                    throw new BusinessException("You are not able to publish the post");
+                }
             }
 
             if (post.Description.Contains("Sexo"))
             {
-                throw new Exception("Content not allowed");
+                throw new BusinessException("Content not allowed");
             }
 
-            await this.postRepository.InsertPost(post);
+            await this.unitOfWork.PostRepository.Add(post);
+            await this.unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> UpdatePost(Post post)
         {
-            return await this.postRepository.UpdatePost(post);
+            this.unitOfWork.PostRepository.Update(post);
+            await this.unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }

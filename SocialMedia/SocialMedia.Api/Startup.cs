@@ -29,7 +29,12 @@ namespace SocialMedia.Api
             //Configurando el Automapper, se mapea a nivel de la solucion los Profile
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddControllers().AddNewtonsoftJson(options =>
+            //Configurando para controlar las excepcion
+            services.AddControllers(options =>
+            {
+                options.Filters.Add<GlobalExceptionFilter>();
+            })
+            .AddNewtonsoftJson(options =>
             {
                 //Ignorando el error de referencias circulares
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -41,9 +46,9 @@ namespace SocialMedia.Api
             });
 
             //Resolviendo nuestras dependencias
-            services.AddTransient<IPostRepository, PostRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IPostService, PostService>();
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             //Resolviendo nuestra dependencias de Base de Datos
             services.AddDbContext<SocialMediaContext>(options =>

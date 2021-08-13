@@ -4,7 +4,10 @@ using SocialMedia.Api.Response;
 using SocialMedia.Core.DTOs;
 using SocialMedia.Core.Entities;
 using SocialMedia.Core.Interfaces;
+using SocialMedia.Core.QueryFilters;
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SocialMedia.Api.Controllers
@@ -32,12 +35,15 @@ namespace SocialMedia.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts()
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public IActionResult GetPosts([FromQuery] PostQueryFilter filters)
         {
-            var posts = await this.postService.GetPosts();
+            var posts = this.postService.GetPosts(filters);
 
             var postsDto = this.mapper.Map<IEnumerable<PostDto>>(posts);
             var response = new ApiResponse<IEnumerable<PostDto>>(postsDto);
+
             return Ok(response);
         }
 
@@ -66,7 +72,7 @@ namespace SocialMedia.Api.Controllers
         public async Task<IActionResult> Put(int id, PostDto postDto)
         {
             var post = this.mapper.Map<Post>(postDto);
-            post.PostId = id;
+            post.Id = id;
 
             var result = await this.postService.UpdatePost(post);
             var response = new ApiResponse<bool>(result);
