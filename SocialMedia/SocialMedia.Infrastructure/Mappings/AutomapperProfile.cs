@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SocialMedia.Core.CustomEntities;
 using SocialMedia.Core.DTOs;
 using SocialMedia.Core.Entities;
 
@@ -9,7 +10,7 @@ namespace SocialMedia.Infrastructure.Mappings
         public AutomapperProfile()
         {
             CreateMap<Post, PostDto>();
-            CreateMap<PostDto, Post>();
+            CreateMap<PostDto, Post>();         
         }
     }
 }

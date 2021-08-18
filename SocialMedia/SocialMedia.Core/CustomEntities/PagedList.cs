@@ -15,7 +15,7 @@ namespace SocialMedia.Core.CustomEntities
         public int? NextPageNumber => HasNextPage ? CurrentPage + 1 : (int?)null;
         public int? PreviousPageNumber => HasPreviousPage ? CurrentPage - 1 : (int?)null;
 
-        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
+        public PagedList(List<T> items = null, int count = 0, int pageNumber = 0, int pageSize = 0)
         {
             TotalCount = count;
             PageSize = pageSize;
