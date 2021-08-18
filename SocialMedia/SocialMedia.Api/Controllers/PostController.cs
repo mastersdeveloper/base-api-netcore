@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SocialMedia.Api.Response;
@@ -23,6 +24,7 @@ namespace SocialMedia.Api.Controllers
                     tales fixtures como Autentication
      */
 
+    [Authorize]
     [Produces("application/json")]//Indicando que solo se usa json al momento de devolver la data
     [Route("api/[controller]")]
     [ApiController]
