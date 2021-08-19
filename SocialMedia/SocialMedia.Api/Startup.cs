@@ -136,11 +136,11 @@ namespace SocialMedia.Api
             app.UseSwaggerUI(options =>
             {
                 //Ruta donde se genera el json de la documentacion 
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Social Media API V1");
-                options.RoutePrefix = string.Empty;
+                options.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Media API V1");
+                //options.RoutePrefix = string.Empty; //==> se usa para IIS Express y Azure
             });
 
-            app.UseRouting();            
+            app.UseRouting();
 
             app.UseAuthentication();
 

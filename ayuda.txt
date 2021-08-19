@@ -20,3 +20,13 @@ Protocolos al momento de usar HTTP
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Pasos para desplegar la aplicacion
+
+1. Descargamos e instalamos ==> ASP.NET Core Runtime 3.1.18, en mi caso es la version que estamos usando y seleccionamos la opcion "Hosting Bundle"
+
+Comandos para publicar ==> dotnet publish -c Release , publicando en modo Release
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+En Azure
+
