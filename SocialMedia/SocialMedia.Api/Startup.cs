@@ -63,6 +63,7 @@ namespace SocialMedia.Api
 
             //Resolviendo nuestras dependencias
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ISecurityService, SecurityService>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 

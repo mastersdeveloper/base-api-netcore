@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialMedia.Core.Entities;
-using SocialMedia.Infrastructure.Data.Configurations;
+using System.Reflection;
 
 #nullable disable
 
@@ -20,16 +20,12 @@ namespace SocialMedia.Infrastructure.Data
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Security> Securities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.ApplyConfiguration(new CommentConfiguration());
-
-            modelBuilder.ApplyConfiguration(new PostConfiguration());
-
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            //Configurando a nivel de Assembly las configuraciones 
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }
