@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SocialMedia.Core.Entities;
 using SocialMedia.Core.Interfaces;
+using SocialMedia.Infrastructure.Interfaces;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,11 +18,13 @@ namespace SocialMedia.Api.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly ISecurityService securityService;
+        private readonly IPasswordService passwordService;
 
-        public TokenController(IConfiguration _configuration, ISecurityService _securityService)
+        public TokenController(IConfiguration _configuration, ISecurityService _securityService, IPasswordService _passwordService)
         {
             this.configuration = _configuration;
             this.securityService = _securityService;
+            this.passwordService = _passwordService;
         }
 
         [HttpPost]
@@ -44,7 +47,9 @@ namespace SocialMedia.Api.Controllers
         {
             var user = await this.securityService.GetLoginByCredentials(login);
 
-            return (user != null, user);
+            var isValid = this.passwordService.Check(user.Password, login.Password);
+
+            return (isValid, user);
         }
 
         private string GenerateToken(Security security)

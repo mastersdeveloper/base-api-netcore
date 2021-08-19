@@ -15,6 +15,7 @@ using SocialMedia.Core.Services;
 using SocialMedia.Infrastructure.Data;
 using SocialMedia.Infrastructure.Filters;
 using SocialMedia.Infrastructure.Interfaces;
+using SocialMedia.Infrastructure.Options;
 using SocialMedia.Infrastructure.Repositories;
 using SocialMedia.Infrastructure.Services;
 using System;
@@ -60,12 +61,14 @@ namespace SocialMedia.Api
 
             //Configurando para obtener la seccion de appsettings.json
             services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
+            services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
 
             //Resolviendo nuestras dependencias
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ISecurityService, SecurityService>();
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IPasswordService, PasswordService>();
 
             //Se va a a generar una sola vez
             services.AddSingleton<IUriService>(provider =>
@@ -138,7 +141,7 @@ namespace SocialMedia.Api
             {
                 //Ruta donde se genera el json de la documentacion 
                 options.SwaggerEndpoint("../swagger/v1/swagger.json", "Social Media API V1");
-                //options.RoutePrefix = string.Empty; //==> se usa para IIS Express y Azure
+                options.RoutePrefix = string.Empty; //==> se usa para IIS Express y Azure
             });
 
             app.UseRouting();

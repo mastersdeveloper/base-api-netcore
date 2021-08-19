@@ -8,6 +8,13 @@ Requisitos Previos:
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 Clean Architecture: busca que nuestra aplicacion sea independiente de los framework. Facil de probar, independiente del UI, databases y external agency.
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	SocialMedia.Api
+	SocialMedia.Core
+		- SocialMedia.Domain
+		- SocialMedia.Application
+	SocialMedia.Infrastructure
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------					
 Reingenieria a una base de datos usando EntityFrameworkCore con el siguiente comando:
@@ -28,5 +35,5 @@ Comandos para publicar ==> dotnet publish -c Release , publicando en modo Releas
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-En Azure
+Salt: conjunto de nuemero aleatorio que se agrega al hash para que sea difierente 
 

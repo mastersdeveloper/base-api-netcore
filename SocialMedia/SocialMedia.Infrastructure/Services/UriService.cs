@@ -1,8 +1,6 @@
 ﻿using SocialMedia.Core.QueryFilters;
 using SocialMedia.Infrastructure.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SocialMedia.Infrastructure.Services
 {
