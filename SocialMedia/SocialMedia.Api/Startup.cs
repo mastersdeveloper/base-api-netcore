@@ -2,22 +2,13 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SocialMedia.Core.CustomEntities;
-using SocialMedia.Core.Interfaces;
-using SocialMedia.Core.Services;
-using SocialMedia.Infrastructure.Data;
+using SocialMedia.Infrastructure.Extensions;
 using SocialMedia.Infrastructure.Filters;
-using SocialMedia.Infrastructure.Interfaces;
-using SocialMedia.Infrastructure.Options;
-using SocialMedia.Infrastructure.Repositories;
-using SocialMedia.Infrastructure.Services;
 using System;
 using System.IO;
 using System.Reflection;
@@ -59,30 +50,14 @@ namespace SocialMedia.Api
                 //options.SuppressModelStateInvalidFilter = true;
             });
 
-            //Configurando para obtener la seccion de appsettings.json
-            services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
-            services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
+            //Agregando la extension de la conexion de base de datos
+            services.AddDbContexts(Configuration);
 
-            //Resolviendo nuestras dependencias
-            services.AddTransient<IPostService, PostService>();
-            services.AddTransient<ISecurityService, SecurityService>();
-            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IPasswordService, PasswordService>();
+            //Agregando la extension de options
+            services.AddOptions(Configuration);
 
-            //Se va a a generar una sola vez
-            services.AddSingleton<IUriService>(provider =>
-            {
-                var accesor = provider.GetRequiredService<IHttpContextAccessor>();
-                var request = accesor.HttpContext.Request;
-                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
-                return new UriService(absoluteUri);
-            });
-
-            //Resolviendo nuestra dependencias de Base de Datos
-            services.AddDbContext<SocialMediaContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SocialMedia"))
-            );
+            //Agregando la extension de services
+            services.AddServices();
 
             //Configurando el Swagger 
             services.AddSwaggerGen(doc =>

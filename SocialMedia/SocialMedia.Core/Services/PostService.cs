@@ -92,7 +92,11 @@ namespace SocialMedia.Core.Services
 
         public async Task<bool> UpdatePost(Post post)
         {
-            this.unitOfWork.PostRepository.Update(post);
+            var existingPost = await this.unitOfWork.PostRepository.GetById(post.Id);
+            existingPost.Image = post.Image;
+            existingPost.Description = post.Description;
+
+            this.unitOfWork.PostRepository.Update(existingPost);
             await this.unitOfWork.SaveChangesAsync();
             return true;
         }
