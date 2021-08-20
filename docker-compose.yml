@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+
+  sqlsocialmedia:
+    build: ./sql
+    ports:
+      - 1433:1433
+    networks:
+      - socialMediaNAT
+    
+networks:
+  socialMediaNAT:
