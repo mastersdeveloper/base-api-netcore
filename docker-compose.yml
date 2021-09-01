@@ -9,5 +9,14 @@ services:
     networks:
       - socialMediaNAT
     
+  apisocialmedia:
+    build: ./SocialMedia
+    ports:
+      - 5000:5000
+    networks: 
+      - socialMediaNAT
+    depends_on: 
+      - sqlsocialmedia
+    
 networks:
   socialMediaNAT:
